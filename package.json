@@ -1,0 +1,18 @@
+{
+  "name": "wraptor",
+  "main": "./lib/wraptor",
+  "version": "0.0.0",
+  "description": "Hard-wrap code in Atom",
+  "keywords": [
+  ],
+  "activationCommands": {
+    "atom-workspace": "wraptor:toggle"
+  },
+  "repository": "https://github.com/redbassett/wraptor",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {
+  }
+}
