@@ -1,15 +1,10 @@
-WraptorView = require './wraptor-view'
 {CompositeDisposable} = require 'atom'
 
 module.exports = Wraptor =
-  wraptorView: null
-  modalPanel: null
   subscriptions: null
 
-  activate: (state) ->
-    @wraptorView = new WraptorView(state.wraptorViewState)
-    @modalPanel = atom.workspace.addModalPanel(item: @wraptorView.getElement(), visible: false)
-
+  activate: ->
+    console.log 'Initilizing wraptor…'
     # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
 
@@ -17,17 +12,7 @@ module.exports = Wraptor =
     @subscriptions.add atom.commands.add 'atom-workspace', 'wraptor:toggle': => @toggle()
 
   deactivate: ->
-    @modalPanel.destroy()
     @subscriptions.dispose()
-    @wraptorView.destroy()
-
-  serialize: ->
-    wraptorViewState: @wraptorView.serialize()
 
   toggle: ->
-    console.log 'Wraptor was toggled!'
-
-    if @modalPanel.isVisible()
-      @modalPanel.hide()
-    else
-      @modalPanel.show()
+    console.log 'wraptor was toggled!'
