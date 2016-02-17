@@ -1,22 +1,22 @@
 # See https://atom.io/docs/latest/hacking-atom-package-word-count#menus for more details
-'context-menu':
-  'atom-text-editor': [
-    {
-      'label': 'Toggle wraptor'
-      'command': 'wraptor:toggle'
-    }
-  ]
-'menu': [
-  {
-    'label': 'Packages'
-    'submenu': [
-      'label': 'wraptor'
-      'submenu': [
-        {
-          'label': 'Toggle'
-          'command': 'wraptor:toggle'
-        }
-      ]
-    ]
-  }
-]
+# 'context-menu':
+#   'atom-text-editor': [
+#     {
+#       'label': 'Toggle wraptor'
+#       'command': 'wraptor:toggle'
+#     }
+#   ]
+# 'menu': [
+#   {
+#     'label': 'Packages'
+#     'submenu': [
+#       'label': 'wraptor'
+#       'submenu': [
+#         {
+#           'label': 'Toggle'
+#           'command': 'wraptor:toggle'
+#         }
+#       ]
+#     ]
+#   }
+# ]
