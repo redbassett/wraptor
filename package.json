@@ -5,9 +5,6 @@
   "description": "Hard-wrap code in Atom",
   "keywords": [
   ],
-  "activationCommands": {
-    "atom-workspace": "wraptor:toggle"
-  },
   "repository": "https://github.com/redbassett/wraptor",
   "license": "MIT",
   "engines": {
