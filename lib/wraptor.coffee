@@ -18,7 +18,7 @@ module.exports = Wraptor =
     @editors = []
 
     @subscriptions.add atom.commands.add 'atom-workspace', 'wraptor:toggle': => @toggle()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'wraptor:wrap': => @manualWrap()
+    @subscriptions.add atom.commands.add 'atom-workspace', 'wraptor:wrap-current-buffer': => @manualWrap()
 
 
     atom.workspace.observeActivePaneItem (paneItem) =>
