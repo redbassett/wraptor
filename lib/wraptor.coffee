@@ -22,7 +22,7 @@ module.exports = Wraptor =
 
 
     atom.workspace.observeActivePaneItem (paneItem) =>
-      @handleEditor(paneItem) if paneItem.constructor.name is 'TextEditor'
+      @handleEditor(paneItem) if paneItem?.constructor.name is 'TextEditor'
 
   enable: ->
     console.log 'Enabling wraptor'
