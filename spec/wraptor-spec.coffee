@@ -16,23 +16,26 @@ describe "wraptor", ->
     waitsForPromise ->
       atom.workspace.open()
 
-  it "converts", ->
-    atom.config.set 'wraptor.preferredLineLength', 30
+  describe "in a text editor", ->
 
-    editor = atom.workspace.getActiveTextEditor()
-    wraptor.handleEditor(editor)
-    # TODO: Clean up these string blocks. Consider referencing reflow for ideas.
-    editor.insertText """
-                      Hello world. This line breaks thirty characters for testing purposes.
-                      """
+    it "wraps text", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editorElement = atom.views.getView(editor)
+      atom.config.set 'editor.preferredLineLength', 30
+      wraptor.handleEditor(editor)
 
-    wraptor.onTextChange()
+      # TODO: Clean up these string blocks. Consider referencing reflow for ideas.
+      editor.insertText """
+                        Hello world. This line breaks thirty characters for testing purposes.
+                        """
 
-    expect(editor.getText()).toEqual  """
-                                      Hello world. This line breaks
-                                      thirty characters for testing
-                                      purposes.
-                                      """
+      atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
+
+      expect(editor.getText()).toEqual  """
+                                        Hello world. This line breaks
+                                        thirty characters for testing
+                                        purposes.
+                                        """
 
 #   describe "when the wraptor:toggle event is triggered", ->
 
