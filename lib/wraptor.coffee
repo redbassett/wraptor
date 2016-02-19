@@ -81,7 +81,7 @@ module.exports = Wraptor =
 
   manualWrap: ->
     editor = atom.workspace.getActiveTextEditor()
-    @onTextChange editor, line_length_for editor, '\n'
+    @onTextChange editor, @line_length_for(editor), '\n'
 
   line_length_for: (editor) ->
     atom.config.get 'editor.preferredLineLength', scope: editor.getRootScopeDescriptor()
