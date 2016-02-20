@@ -1,0 +1,12 @@
+---
+engines:
+  coffeelint:
+    enabled: true
+    config: .codeclimate/coffeelint.json
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - "**.coffee"
+exclude_paths:
+- spec/
