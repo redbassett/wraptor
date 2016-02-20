@@ -1,15 +1,13 @@
 {
   "name": "wraptor",
   "main": "./lib/wraptor",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Stop being soft on your code. Hard wrap in Atom.",
-  "keywords": [
-  ],
+  "keywords": [],
   "repository": "https://github.com/redbassett/wraptor",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
