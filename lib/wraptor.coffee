@@ -17,8 +17,10 @@ module.exports = Wraptor =
     @editorSubscriptions = []
     @editors = []
 
-    @subscriptions.add atom.commands.add 'atom-workspace', 'wraptor:toggle': => @toggle()
-    @subscriptions.add atom.commands.add 'atom-workspace', 'wraptor:wrap-current-buffer': => @manualWrap()
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'wraptor:toggle': => @toggle()
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'wraptor:wrap-current-buffer': => @manualWrap()
 
 
     atom.workspace.observeActivePaneItem (paneItem) =>
@@ -56,7 +58,8 @@ module.exports = Wraptor =
     # TODO: Figure out how to retrieve the actual EOL for the system here
     # (Was using config for editor.invisibles.eol, but that was just the
     # visual representation)
-    @editorSubscriptions[editor.id] = editor.onDidStopChanging => @onTextChange(editor, line_length, '\n')
+    @editorSubscriptions[editor.id] = editor.onDidStopChanging =>
+      @onTextChange(editor, line_length, '\n')
     @subscriptions.add @editorSubscriptions[editor.id]
     console.log "Adding editor #{editor.id}"
 
@@ -84,7 +87,8 @@ module.exports = Wraptor =
     @onTextChange editor, @line_length_for(editor), '\n'
 
   line_length_for: (editor) ->
-    atom.config.get 'editor.preferredLineLength', scope: editor.getRootScopeDescriptor()
+    atom.config.get 'editor.preferredLineLength',
+      scope: editor.getRootScopeDescriptor()
 
   enabled_for: (editor) ->
     atom.config.get 'wraptor.enabled', scope: editor.getRootScopeDescriptor()
