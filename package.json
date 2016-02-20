@@ -2,7 +2,7 @@
   "name": "wraptor",
   "main": "./lib/wraptor",
   "version": "0.0.0",
-  "description": "Hard-wrap code in Atom",
+  "description": "Stop being soft on your code. Hard wrap in Atom.",
   "keywords": [
   ],
   "repository": "https://github.com/redbassett/wraptor",
