@@ -27,7 +27,6 @@ module.exports = Wraptor =
       @handleEditor(paneItem) if paneItem?.constructor.name is 'TextEditor'
 
   enable: ->
-    console.log 'Enabling wraptor'
     @addEditor atom.workspace.getActiveTextEditor()
 
   disable: ->
@@ -36,7 +35,6 @@ module.exports = Wraptor =
     if editor in @editors
       if i = @editors.indexOf(editor)
         @editors.splice i, 1
-        console.log "Removing editor #{editor.id}"
 
     @editorSubscriptions[editor.id]?.dispose()
 
@@ -61,7 +59,6 @@ module.exports = Wraptor =
     @editorSubscriptions[editor.id] = editor.onDidStopChanging =>
       @onTextChange(editor, line_length, '\n')
     @subscriptions.add @editorSubscriptions[editor.id]
-    console.log "Adding editor #{editor.id}"
 
   onTextChange: (editor, line_length, eol) ->
     i = 0
