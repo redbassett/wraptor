@@ -22,4 +22,4 @@ To manually wrap the current text editor, run the `Wraptor: Wrap Current Buffer`
 - [ ] Allow manual wrapping of selection
 - [ ] Implement better synergy
 
-#### It's a wrap!
+#### That's a wrap!
