@@ -1,0 +1,12 @@
+/* TEAM */
+Built by: Harry Grillo
+Email: <harry@redbassett.com>
+Twitter: @redbassett
+Github: redbassett
+Location: Boston, MA
+
+/* THANKS */
+Lee Dohm
+Fabian Stiewitz
+Cédric Néhémie
+Mark Hahn
