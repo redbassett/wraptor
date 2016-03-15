@@ -1,6 +1,6 @@
 {
   "name": "wraptor",
-  "main": "./lib/wraptor",
+  "main": "./lib/main",
   "version": "0.1.1",
   "description": "Stop being soft on your code. Hard wrap in Atom.",
   "keywords": [],
