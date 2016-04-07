@@ -66,6 +66,8 @@ module.exports = Wraptor =
       line = editor.lineTextForBufferRow(i)
       if break_point = @findBreakPoint(line, line_length)
         editor.setTextInBufferRange [[i,break_point],[i,break_point+1]], eol
+        if comment = @getCommentSymbols(line)
+          editor.setTextInBufferRange [[i+1,0],[i+1,0]], comment
       i += 1
 
   findBreakPoint: (line, length) ->
@@ -89,3 +91,9 @@ module.exports = Wraptor =
 
   enabled_for: (editor) ->
     atom.config.get 'wraptor.enabled', scope: editor.getRootScopeDescriptor()
+
+  getCommentSymbols: (line) ->
+    comments = /(\/\/( )?|\#( )?)/
+    match = line.match comments
+
+    return if match then match[0] else null
