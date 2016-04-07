@@ -17,7 +17,7 @@ To enable wraptor on a specific grammar, simply set the `enabled` property to `t
 To manually wrap the current text editor, run the `Wraptor: Wrap Current Buffer` command from the command palette.
 
 ## What's next:
-- [ ] Handle comments
+- [x] Handle comments
 - [ ] Allow manual wrapping of selection
 - [ ] Implement better synergy
 
