@@ -1,10 +1,5 @@
 wraptor = require '../lib/main'
 
-# Use the command `window:run-package-specs` (cmd-alt-ctrl-p) to run specs.
-#
-# To run a specific `it` or `describe` block add an `f` to the front (e.g. `fit`
-# or `fdescribe`). Remove the `f` to unfocus the block.
-
 describe "wraptor", ->
   [workspaceElement, activationPromise] = []
 
@@ -22,7 +17,7 @@ describe "wraptor", ->
       editor = atom.workspace.getActiveTextEditor()
       editorElement = atom.views.getView(editor)
       atom.config.set 'editor.preferredLineLength', 30
-      wraptor.handleEditor(editor)
+      wraptor.handleEditor editor
 
       # TODO: Clean up these string blocks. Consider referencing reflow for ideas.
       editor.insertText """
@@ -53,8 +48,6 @@ describe "wraptor", ->
                                        // than thirty characters and
                                        // should be wrapped correctly
                                        """
-
-#   describe "when the wraptor:toggle event is triggered", ->
 
   describe "::findBreakPoint", ->
     line = 'this line is more than 20 characters long, which is our wrap point'
