@@ -1,3 +1,7 @@
+## 0.1.2 - Alpha
+- Add support for comments
+- Clean up code base
+
 ## 0.1.1 - Development (pre-release)
 - Update README to display package details
 - Add a humans.txt file to the package
