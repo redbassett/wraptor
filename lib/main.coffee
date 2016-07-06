@@ -69,7 +69,7 @@ module.exports = Wraptor =
     @addEditor(editor) if editor not in @editors and @enabled_for editor
 
   getCommentSymbols: (line) ->
-    comments = /(\/\/( )?|\#( )?)/
+    comments = /^\s*(\/\/( )?|\#( )?)/
     match = line.match comments
 
     return if match then match[0] else null

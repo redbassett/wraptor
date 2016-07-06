@@ -48,6 +48,23 @@ describe "wraptor", ->
                                        // than thirty characters and
                                        // should be wrapped correctly
                                        """
+    it "doesn't comment lines when braking existing comments that start mid-line", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editorElement = atom.views.getView(editor)
+      atom.config.set 'editor.preferredLineLength', 30
+      wraptor.handleEditor editor
+
+      editor.insertText """
+                        This line has a comment // in the middle and is longer than thirty characters
+                        """
+
+      atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
+
+      expect(editor.getText()).toEqual """
+                                       This line has a comment // in
+                                       the middle and is longer than
+                                       thirty characters
+                                       """
 
   describe "::findBreakPoint", ->
     line = 'this line is more than 20 characters long, which is our wrap point'
@@ -67,7 +84,7 @@ describe "wraptor", ->
     slashesComment = "// This is a comment"
     hashComment = "# This is also a comment"
     noSpacesComment = "//No space before this comment"
-    midLineComment = "This isn't a comment // Just kidding, it is"
+    midLineComment = "This line doesn't start with a comment // so it shouldn't wrap as one"
 
     it "returns null if no comment", ->
       expect(wraptor.getCommentSymbols(notAComment)).toEqual(null)
@@ -81,5 +98,5 @@ describe "wraptor", ->
     it "returns comment symbol without space for comment without space", ->
       expect(wraptor.getCommentSymbols(noSpacesComment)).toEqual('//');
 
-    it "returns a comment symbol for a comment that starts mid-line", ->
-      expect(wraptor.getCommentSymbols(midLineComment)).toEqual('// ');
+    it "doesn't return a comment symbol for a comment that starts mid-line", ->
+      expect(wraptor.getCommentSymbols(midLineComment)).toEqual(null);
