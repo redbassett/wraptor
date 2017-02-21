@@ -31,6 +31,71 @@ describe "wraptor", ->
                                         thirty characters for testing
                                         purposes.
                                         """
+    it "breaks words if breakWords is true", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editorElement = atom.views.getView(editor)
+      atom.config.set 'editor.preferredLineLength', 30
+      atom.config.set('wraptor.breakWords', true)
+      wraptor.handleEditor editor
+
+      # TODO: Clean up these string blocks. Consider referencing reflow for ideas.
+      editor.insertText """
+                        Hello world. This line breaks thirty characters for testing purposes but_it_does't_break_a_single_word that has more than thirty characters.
+                        """
+
+      atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
+
+      expect(editor.getText()).toEqual  """
+                                        Hello world. This line breaks
+                                        thirty characters for testing
+                                        purposes
+                                        but_it_does't_break_a_single_w
+                                        ord that has more than thirty
+                                        characters.
+                                        """
+    it "doesn't breaks words if breakWords is false", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editorElement = atom.views.getView(editor)
+      atom.config.set 'editor.preferredLineLength', 30
+      atom.config.set('wraptor.breakWords', false)
+      wraptor.handleEditor editor
+
+      # TODO: Clean up these string blocks. Consider referencing reflow for ideas.
+      editor.insertText """
+                        Hello world. This line breaks thirty characters for testing purposes but_it_does't_break_a_single_word that has more than thirty characters.
+                        """
+
+      atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
+
+      expect(editor.getText()).toEqual  """
+                                        Hello world. This line breaks
+                                        thirty characters for testing
+                                        purposes
+                                        but_it_does't_break_a_single_word
+                                        that has more than thirty
+                                        characters.
+                                        """
+    it "breaks words if breakWords is unset", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editorElement = atom.views.getView(editor)
+      atom.config.set 'editor.preferredLineLength', 30
+      wraptor.handleEditor editor
+
+      # TODO: Clean up these string blocks. Consider referencing reflow for ideas.
+      editor.insertText """
+                        Hello world. This line breaks thirty characters for testing purposes but_it_does't_break_a_single_word that has more than thirty characters.
+                        """
+
+      atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
+
+      expect(editor.getText()).toEqual  """
+                                        Hello world. This line breaks
+                                        thirty characters for testing
+                                        purposes
+                                        but_it_does't_break_a_single_w
+                                        ord that has more than thirty
+                                        characters.
+                                        """
     it "adds comment lines when breaking existing comments", ->
       editor = atom.workspace.getActiveTextEditor()
       editorElement = atom.views.getView(editor)
@@ -76,8 +141,11 @@ describe "wraptor", ->
     it "hard wraps strings longer than `preferredLineLength`", ->
       expect(wraptor.findBreakPoint(line,20)).toEqual(17)
 
-    it "hard wraps strings without spaces at `preferredLineLength`", ->
-      expect(wraptor.findBreakPoint(line_without_spaces,20)).toEqual(20)
+    it "hard wraps strings without spaces at `preferredLineLength` if breakWords", ->
+      expect(wraptor.findBreakPoint(line_without_spaces,20,true)).toEqual(20)
+
+    it "doesn't hard wrap strings without spaces if not breakWords", ->
+      expect(wraptor.findBreakPoint(line_without_spaces,20,false)).toEqual(false)
 
   describe "::getCommentSymbols", ->
     notAComment = "No comment."
