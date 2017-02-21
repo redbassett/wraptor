@@ -1,3 +1,7 @@
+## 0.1.4 - Alpha
+- Add option to break mid-word (default) or only on spaces
+    Disable this to prevent URLs and words over the wrap length from being broken by wraps.
+
 ## 0.1.3 - Alpha
 - Fix behavior of mid-line comments:
     New lines will only start with a comment symbol if the previous line also started with a symbol. Mid-line comment symbols will not trigger this behavior.
