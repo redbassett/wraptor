@@ -11,6 +11,9 @@ module.exports = Wraptor =
     enabled:
       type: 'boolean'
       default: false
+    breakWords:
+      type: 'boolean'
+      default: true
 
   addEditor: (editor) ->
     @editors.push editor
@@ -54,11 +57,20 @@ module.exports = Wraptor =
   enabled_for: (editor) ->
     atom.config.get 'wraptor.enabled', scope: editor.getRootScopeDescriptor()
 
-  findBreakPoint: (line, length) ->
+  breakWordsFor: (editor) ->
+    atom.config.get 'wraptor.breakWords', scope: editor.getRootScopeDescriptor()
+
+  findBreakPoint: (line, length, breakWords) ->
     if line.length > length
       sub_line = line[0..length - 1]
       if sub_line.indexOf(' ') == -1
-        return length
+        if breakWords
+          return length
+        else
+          if line.indexOf(' ') == -1
+            return false
+          else
+            return line.indexOf(' ')
       else
         sub_line = sub_line.split('').reverse().join('')
         return sub_line.length - sub_line.indexOf(' ') - 1
@@ -86,8 +98,15 @@ module.exports = Wraptor =
     i = 0
     while i < editor.getLineCount()
       line = editor.lineTextForBufferRow(i)
-      if break_point = @findBreakPoint(line, line_length)
-        editor.setTextInBufferRange [[i,break_point],[i,break_point+1]], eol
+      if break_point = @findBreakPoint(line, line_length, @breakWordsFor(editor))
+        if editor.getTextInBufferRange([[i,break_point],[i,break_point+1]]) == " "
+          editor.setTextInBufferRange [[i,break_point],[i,break_point+1]], eol
+        else
+          currentPosition = editor.getCursorBufferPosition()
+          editor.setCursorBufferPosition([i, break_point])
+          editor.insertText(eol)
+          editor.setCursorBufferPosition(currentPosition)
+
         if comment = @getCommentSymbols(line)
           editor.setTextInBufferRange [[i+1,0],[i+1,0]], comment
       i += 1
