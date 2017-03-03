@@ -1,3 +1,8 @@
+## 0.2.1 - Alpha
+- VERSION BUMP ONLY
+- No source changes - this update is to bring source and Atom.io version numbers into sync
+- See https://github.com/redbassett/wraptor/issues/12 for more details
+
 ## 0.1.4 - Alpha
 - Add option to break mid-word (default) or only on spaces
     Disable this to prevent URLs and words over the wrap length from being broken by wraps.
