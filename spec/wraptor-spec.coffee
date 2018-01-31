@@ -101,18 +101,20 @@ describe "wraptor", ->
       editorElement = atom.views.getView(editor)
       atom.config.set 'editor.preferredLineLength', 30
       wraptor.handleEditor editor
+      commentChars = ['//', '#', '%']
+      for commentChar in commentChars
+        editor.insertText """
+                          #{commentChar} This comment's longer than thirty characters and should be wrapped correctly
+                          """
 
-      editor.insertText """
-                        // This comment is longer than thirty characters and should be wrapped correctly
-                        """
+        atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
 
-      atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
-
-      expect(editor.getText()).toEqual """
-                                       // This comment is longer
-                                       // than thirty characters and
-                                       // should be wrapped correctly
-                                       """
+        expect(editor.getText()).toEqual """
+                                         #{commentChar} This comment's longer than
+                                         #{commentChar} thirty characters and
+                                         #{commentChar} should be wrapped correctly
+                                         """
+        editor.setText("")
     it "doesn't comment lines when braking existing comments that start mid-line", ->
       editor = atom.workspace.getActiveTextEditor()
       editorElement = atom.views.getView(editor)
