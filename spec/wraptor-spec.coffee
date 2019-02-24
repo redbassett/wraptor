@@ -160,13 +160,84 @@ describe "wraptor", ->
       expect(wraptor.getCommentSymbols(notAComment)).toEqual(null)
 
     it "returns slashes for a slashes comment", ->
-      expect(wraptor.getCommentSymbols(slashesComment)).toEqual('// ');
+      expect(wraptor.getCommentSymbols(slashesComment)).toEqual('// ')
 
     it "returns a hash for a has comment", ->
-      expect(wraptor.getCommentSymbols(hashComment)).toEqual('# ');
+      expect(wraptor.getCommentSymbols(hashComment)).toEqual('# ')
 
     it "returns comment symbol without space for comment without space", ->
-      expect(wraptor.getCommentSymbols(noSpacesComment)).toEqual('//');
+      expect(wraptor.getCommentSymbols(noSpacesComment)).toEqual('//')
 
     it "doesn't return a comment symbol for a comment that starts mid-line", ->
-      expect(wraptor.getCommentSymbols(midLineComment)).toEqual(null);
+      expect(wraptor.getCommentSymbols(midLineComment)).toEqual(null)
+
+  describe "::getNextLineIndent", ->
+    noIndent = "noindent"
+    dots = ".. dots"
+    emptyBracket = "[] empty bracket"
+
+    spaces = "  spaces"
+    tabs = "		tabs"
+    tabPlusSpaces = "	   tabs plus spaces"
+    singleIndent = "- single indent"
+    doubleIndent = "-- double indent"
+    plusIndent = "+ plus style indent"
+    numbered = "10. numbered"
+    emptyCheckbox = "[ ] empty checkbox"
+    filledCheckbox = "[x] filled checkbox"
+    indentedCheckBox = "- [X] indented checkbox"
+    numberedCheckbox = "1. [X] numbered checkbox"
+    indentedNumberedCheckbox = "  1. [ ] indented numbered checkbox"
+    blockquote = "> blockquote"
+    indentedBlockQuote = "  > indented blockquote"
+
+    it "returns empty for no indent", ->
+      expect(wraptor.getNextLineIndent(noIndent)).toEqual("")
+
+    it "does not indent dots", ->
+      expect(wraptor.getNextLineIndent(dots)).toEqual("")
+
+    it "does not indent empty brackets", ->
+      expect(wraptor.getNextLineIndent(emptyBracket)).toEqual("")
+
+    it "does indent spaces", ->
+      expect(wraptor.getNextLineIndent(spaces)).toEqual("  ")
+
+    it "does indent tabs", ->
+      expect(wraptor.getNextLineIndent(tabs)).toEqual("		")
+
+    it "does indent spaces after tabs", ->
+      expect(wraptor.getNextLineIndent(tabPlusSpaces)).toEqual("	   ")
+
+    it "does indent single indent", ->
+      expect(wraptor.getNextLineIndent(singleIndent)).toEqual("  ")
+
+    it "does indent double indent", ->
+      expect(wraptor.getNextLineIndent(doubleIndent)).toEqual("   ")
+
+    it "does indent plusIndent", ->
+      expect(wraptor.getNextLineIndent(plusIndent)).toEqual("  ")
+
+    it "does indent numbered", ->
+      expect(wraptor.getNextLineIndent(numbered)).toEqual("    ")
+
+    it "does indent emptyCheckbox", ->
+      expect(wraptor.getNextLineIndent(emptyCheckbox)).toEqual("    ")
+
+    it "does indent filledCheckbox", ->
+      expect(wraptor.getNextLineIndent(filledCheckbox)).toEqual("    ")
+
+    it "does indent indentedCheckBox", ->
+      expect(wraptor.getNextLineIndent(indentedCheckBox)).toEqual("      ")
+
+    it "does indent numberedCheckbox", ->
+      expect(wraptor.getNextLineIndent(numberedCheckbox)).toEqual("       ")
+
+    it "does indent indentedNumberedCheckbox", ->
+      expect(wraptor.getNextLineIndent(indentedNumberedCheckbox)).toEqual("         ")
+
+    it "does indent blockquote", ->
+      expect(wraptor.getNextLineIndent(blockquote)).toEqual("  ")
+
+    it "does indent indentedBlockQuote", ->
+      expect(wraptor.getNextLineIndent(indentedBlockQuote)).toEqual("    ")
