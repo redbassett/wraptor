@@ -86,7 +86,7 @@ module.exports = Wraptor =
 
     return if match then match[0] else null
 
-  getLineIndent: (line) ->
+  getNextLineIndent: (line) ->
     indent = ''
     tabs = /^\t+/.exec(line)
     if tabs
@@ -115,11 +115,11 @@ module.exports = Wraptor =
       line = editor.lineTextForBufferRow(i)
       if break_point = @findBreakPoint(line, line_length, @breakWordsFor(editor))
         if editor.getTextInBufferRange([[i,break_point],[i,break_point+1]]) == " "
-          editor.setTextInBufferRange [[i,break_point],[i,break_point+1]], eol + @getLineIndent(line)
+          editor.setTextInBufferRange [[i,break_point],[i,break_point+1]], eol + @getNextLineIndent(line)
         else
           currentPosition = editor.getCursorBufferPosition()
           editor.setCursorBufferPosition([i, break_point])
-          editor.insertText(eol + @getLineIndent(line))
+          editor.insertText(eol + @getNextLineIndent(line))
           editor.setCursorBufferPosition(currentPosition)
 
         if comment = @getCommentSymbols(line)
