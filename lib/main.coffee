@@ -14,6 +14,10 @@ module.exports = Wraptor =
     breakWords:
       type: 'boolean'
       default: true
+    indentNewLine:
+      description: 'Try to match the indentation of the wrapped line'
+      type: 'boolean'
+      default: true
 
   addEditor: (editor) ->
     @editors.push editor
@@ -101,6 +105,13 @@ module.exports = Wraptor =
     console.log('line indent "' + indent + '"')
     return indent
 
+  getNewLineText: (line, eol) ->
+    editor = atom.workspace.getActiveTextEditor()
+    if (atom.config.get('wraptor.indentNewLine', scope: editor.getRootScopeDescriptor()))
+      return eol + @getNextLineIndent(line)
+    else
+      return eol
+
   line_length_for: (editor) ->
     atom.config.get 'editor.preferredLineLength',
       scope: editor.getRootScopeDescriptor()
@@ -115,11 +126,11 @@ module.exports = Wraptor =
       line = editor.lineTextForBufferRow(i)
       if break_point = @findBreakPoint(line, line_length, @breakWordsFor(editor))
         if editor.getTextInBufferRange([[i,break_point],[i,break_point+1]]) == " "
-          editor.setTextInBufferRange [[i,break_point],[i,break_point+1]], eol + @getNextLineIndent(line)
+          editor.setTextInBufferRange [[i,break_point],[i,break_point+1]], @getNewLineText(line, eol)
         else
           currentPosition = editor.getCursorBufferPosition()
           editor.setCursorBufferPosition([i, break_point])
-          editor.insertText(eol + @getNextLineIndent(line))
+          editor.insertText(@getNewLineText(line, eol))
           editor.setCursorBufferPosition(currentPosition)
 
         if comment = @getCommentSymbols(line)
