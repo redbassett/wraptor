@@ -86,6 +86,21 @@ module.exports = Wraptor =
 
     return if match then match[0] else null
 
+  getLineIndent: (line) ->
+    indent = ''
+    tabs = /^\t+/.exec(line)
+    if tabs
+      indent += '\t'.repeat(tabs[0].length)
+      line = line.substring(tabs[0].length) # consume processed part of input
+
+    # https://regex101.com/r/6xfHDP/4
+    spaces = /^ *[-+]*([0-9]+\.)* *(\[[ xX]{1}\])* *\>* */gm.exec(line)
+    if spaces
+      indent += ' '.repeat(spaces[0].length)
+
+    console.log('line indent "' + indent + '"')
+    return indent
+
   line_length_for: (editor) ->
     atom.config.get 'editor.preferredLineLength',
       scope: editor.getRootScopeDescriptor()
@@ -100,11 +115,11 @@ module.exports = Wraptor =
       line = editor.lineTextForBufferRow(i)
       if break_point = @findBreakPoint(line, line_length, @breakWordsFor(editor))
         if editor.getTextInBufferRange([[i,break_point],[i,break_point+1]]) == " "
-          editor.setTextInBufferRange [[i,break_point],[i,break_point+1]], eol
+          editor.setTextInBufferRange [[i,break_point],[i,break_point+1]], eol + @getLineIndent(line)
         else
           currentPosition = editor.getCursorBufferPosition()
           editor.setCursorBufferPosition([i, break_point])
-          editor.insertText(eol)
+          editor.insertText(eol + @getLineIndent(line))
           editor.setCursorBufferPosition(currentPosition)
 
         if comment = @getCommentSymbols(line)
