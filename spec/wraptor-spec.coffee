@@ -132,6 +132,45 @@ describe "wraptor", ->
                                        the middle and is longer than
                                        thirty characters
                                        """
+    it "inserts indent when indentNewLine is unset", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editorElement = atom.views.getView(editor)
+      atom.config.set 'editor.preferredLineLength', 30
+      wraptor.handleEditor editor
+
+      editor.insertText "  Hello world. This line is longer than 30 characters"
+
+      atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
+
+      expect(editor.getText()).toEqual  "  Hello world. This line is\n  longer than 30 characters"
+
+    it "does not insert indent when indentNewLine is false", ->
+      editor = atom.workspace.getActiveTextEditor()
+      editorElement = atom.views.getView(editor)
+      atom.config.set 'editor.preferredLineLength', 30
+      atom.config.set 'wraptor.indentNewLine', false
+      wraptor.handleEditor editor
+
+      editor.insertText """
+                        Hello world. This line breaks thirty characters for testing purposes.
+                        """
+
+      atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
+
+      expect(editor.getText()).toEqual  """
+                                        Hello world. This line breaks
+                                        thirty characters for testing
+                                        purposes.
+                                        """
+  describe "::checkSafeBreakpoint", ->
+    line = '    the| line'
+
+    it "returns the breakpoint when the breakpoint is safe", ->
+      expect(wraptor.checkSafeBreakPoint(8, line, 8)).toEqual(8)
+
+    it "returns false when the breakpoint is unsafe", ->
+      expect(wraptor.checkSafeBreakPoint(8, line, 7)).toEqual(false)
+
 
   describe "::findBreakPoint", ->
     line = 'this line is more than 20 characters long, which is our wrap point'
