@@ -87,7 +87,7 @@ module.exports = Wraptor =
     return if match then match[0] else null
 
   line_length_for: (editor) ->
-    atom.config.get 'editor.preferredLineLength',
+    atom.config.get 'wraptor.preferredLineLength',
       scope: editor.getRootScopeDescriptor()
 
   manualWrap: ->
