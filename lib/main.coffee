@@ -64,6 +64,11 @@ module.exports = Wraptor =
   breakWordsFor: (editor) ->
     atom.config.get 'wraptor.breakWords', scope: editor.getRootScopeDescriptor()
 
+  ###
+  There are situations where a break will only create a new line which cannot be
+  broken, creating and infinite loop of line breaks.
+  Returns false when the break is unsafe, or breakPoint 
+  ###
   checkSafeBreakPoint: (breakPoint, line, allowedLength) ->
     indentLength = @getNextLineIndent(line).length
     # if the next line can be broken, the break is safe
