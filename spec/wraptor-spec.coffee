@@ -16,7 +16,7 @@ describe "wraptor", ->
     it "wraps text", ->
       editor = atom.workspace.getActiveTextEditor()
       editorElement = atom.views.getView(editor)
-      atom.config.set 'editor.preferredLineLength', 30
+      atom.config.set 'wraptor.preferredLineLength', 30
       wraptor.handleEditor editor
 
       # TODO: Clean up these string blocks. Consider referencing reflow for ideas.
@@ -34,7 +34,7 @@ describe "wraptor", ->
     it "breaks words if breakWords is true", ->
       editor = atom.workspace.getActiveTextEditor()
       editorElement = atom.views.getView(editor)
-      atom.config.set 'editor.preferredLineLength', 30
+      atom.config.set 'wraptor.preferredLineLength', 30
       atom.config.set('wraptor.breakWords', true)
       wraptor.handleEditor editor
 
@@ -56,7 +56,7 @@ describe "wraptor", ->
     it "doesn't breaks words if breakWords is false", ->
       editor = atom.workspace.getActiveTextEditor()
       editorElement = atom.views.getView(editor)
-      atom.config.set 'editor.preferredLineLength', 30
+      atom.config.set 'wraptor.preferredLineLength', 30
       atom.config.set('wraptor.breakWords', false)
       wraptor.handleEditor editor
 
@@ -78,7 +78,7 @@ describe "wraptor", ->
     it "breaks words if breakWords is unset", ->
       editor = atom.workspace.getActiveTextEditor()
       editorElement = atom.views.getView(editor)
-      atom.config.set 'editor.preferredLineLength', 30
+      atom.config.set 'wraptor.preferredLineLength', 30
       wraptor.handleEditor editor
 
       # TODO: Clean up these string blocks. Consider referencing reflow for ideas.
@@ -99,7 +99,7 @@ describe "wraptor", ->
     it "adds comment lines when breaking existing comments", ->
       editor = atom.workspace.getActiveTextEditor()
       editorElement = atom.views.getView(editor)
-      atom.config.set 'editor.preferredLineLength', 30
+      atom.config.set 'wraptor.preferredLineLength', 30
       wraptor.handleEditor editor
       commentChars = ['//', '#', '%']
       for commentChar in commentChars
@@ -118,7 +118,7 @@ describe "wraptor", ->
     it "doesn't comment lines when braking existing comments that start mid-line", ->
       editor = atom.workspace.getActiveTextEditor()
       editorElement = atom.views.getView(editor)
-      atom.config.set 'editor.preferredLineLength', 30
+      atom.config.set 'wraptor.preferredLineLength', 30
       wraptor.handleEditor editor
 
       editor.insertText """
@@ -132,6 +132,44 @@ describe "wraptor", ->
                                        the middle and is longer than
                                        thirty characters
                                        """
+    it "uses the global editor default for line length is not overridden", ->
+      editor = atom.workspace.getActiveTextEditor()
+      atom.config.set('editor.preferredLineLength', 80, scope: editor.getRootScopeDescriptor())
+
+      editorElement = atom.views.getView(editor)
+      wraptor.handleEditor editor
+
+      editor.insertText """
+                        Hello world. This line breaks at eighty characters for testing purposes. This
+                        is expected because that's the global value
+                        """
+
+      atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
+
+      expect(editor.getText()).toEqual  """
+                                        Hello world. This line breaks at eighty characters for testing purposes. This
+                                        is expected because that's the global value
+                                        """
+
+    it "uses the override when global and wraptor line length setting is set", ->
+      editor = atom.workspace.getActiveTextEditor()
+      atom.config.set('editor.preferredLineLength', 80, scope: editor.getRootScopeDescriptor())
+      atom.config.set('wraptor.preferredLineLength', 30, scope: editor.getRootScopeDescriptor())
+
+      editorElement = atom.views.getView(editor)
+      wraptor.handleEditor editor
+
+      editor.insertText """
+                        Hello world. This line breaks thirty characters for testing purposes.
+                        """
+
+      atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
+
+      expect(editor.getText()).toEqual  """
+                                        Hello world. This line breaks
+                                        thirty characters for testing
+                                        purposes.
+                                        """
 
   describe "::findBreakPoint", ->
     line = 'this line is more than 20 characters long, which is our wrap point'
