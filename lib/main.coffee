@@ -126,7 +126,7 @@ module.exports = Wraptor =
     return indent
 
   line_length_for: (editor) ->
-    atom.config.get 'editor.preferredLineLength',
+    atom.config.get 'wraptor.preferredLineLength',
       scope: editor.getRootScopeDescriptor()
 
   manualWrap: ->
