@@ -14,6 +14,10 @@ module.exports = Wraptor =
     breakWords:
       type: 'boolean'
       default: true
+    indentNewLine:
+      description: 'Try to match the indentation of the wrapped line'
+      type: 'boolean'
+      default: true
 
   addEditor: (editor) ->
     @editors.push editor
@@ -60,6 +64,23 @@ module.exports = Wraptor =
   breakWordsFor: (editor) ->
     atom.config.get 'wraptor.breakWords', scope: editor.getRootScopeDescriptor()
 
+  ###
+  There are situations where a break will only create a new line which cannot be
+  broken, creating and infinite loop of line breaks.
+  Returns false when the break is unsafe, or breakPoint 
+  ###
+  checkSafeBreakPoint: (breakPoint, line, allowedLength) ->
+    indentLength = @getNextLineIndent(line).length
+    # if the next line can be broken, the break is safe
+    if line.indexOf(' ', breakPoint + 1) - breakPoint >= indentLength
+      return breakPoint
+
+    # if the next line is shorter than the allowedLength, the break is safe
+    if line.length - breakPoint - 1 + indentLength <= allowedLength
+      return breakPoint
+
+    return false
+
   findBreakPoint: (line, length, breakWords) ->
     if line.length > length
       sub_line = line[0..length - 1]
@@ -70,10 +91,10 @@ module.exports = Wraptor =
           if line.indexOf(' ') == -1
             return false
           else
-            return line.indexOf(' ')
+            return @checkSafeBreakPoint(line.indexOf(' '), line, length)
       else
         sub_line = sub_line.split('').reverse().join('')
-        return sub_line.length - sub_line.indexOf(' ') - 1
+        return @checkSafeBreakPoint(sub_line.length - sub_line.indexOf(' ') - 1, line, length)
     else
       return false
 
@@ -85,6 +106,24 @@ module.exports = Wraptor =
     match = line.match comments
 
     return if match then match[0] else null
+
+  getNextLineIndent: (line) ->
+    editor = atom.workspace.getActiveTextEditor()
+    if !(atom.config.get('wraptor.indentNewLine', scope: editor.getRootScopeDescriptor()))
+      return ''
+
+    indent = ''
+    tabs = /^\t+/.exec(line)
+    if tabs
+      indent += '\t'.repeat(tabs[0].length)
+      line = line.substring(tabs[0].length) # consume processed part of input
+
+    # https://regex101.com/r/6xfHDP/4
+    spaces = /^ *[-+]*([0-9]+\.)* *(\[[ xX]{1}\])* *\>* */gm.exec(line)
+    if spaces
+      indent += ' '.repeat(spaces[0].length)
+
+    return indent
 
   line_length_for: (editor) ->
     atom.config.get 'wraptor.preferredLineLength',
@@ -100,11 +139,11 @@ module.exports = Wraptor =
       line = editor.lineTextForBufferRow(i)
       if break_point = @findBreakPoint(line, line_length, @breakWordsFor(editor))
         if editor.getTextInBufferRange([[i,break_point],[i,break_point+1]]) == " "
-          editor.setTextInBufferRange [[i,break_point],[i,break_point+1]], eol
+          editor.setTextInBufferRange [[i,break_point],[i,break_point+1]], eol + @getNextLineIndent(line)
         else
           currentPosition = editor.getCursorBufferPosition()
           editor.setCursorBufferPosition([i, break_point])
-          editor.insertText(eol)
+          editor.insertText(eol + @getNextLineIndent(line))
           editor.setCursorBufferPosition(currentPosition)
 
         if comment = @getCommentSymbols(line)
