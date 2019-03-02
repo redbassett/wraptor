@@ -132,7 +132,7 @@ describe "wraptor", ->
                                        the middle and is longer than
                                        thirty characters
                                        """
-    it "uses the global editor default for line length is not overridden", ->
+    it "uses the global editor default for line length if it is not overridden by a wraptor setting", ->
       editor = atom.workspace.getActiveTextEditor()
       atom.config.set('editor.preferredLineLength', 80, scope: editor.getRootScopeDescriptor())
 
@@ -140,8 +140,7 @@ describe "wraptor", ->
       wraptor.handleEditor editor
 
       editor.insertText """
-                        Hello world. This line breaks at eighty characters for testing purposes. This
-                        is expected because that's the global value
+                        Hello world. This line breaks at eighty characters for testing purposes. This is expected because that's the global value
                         """
 
       atom.commands.dispatch editorElement, 'wraptor:wrap-current-buffer'
